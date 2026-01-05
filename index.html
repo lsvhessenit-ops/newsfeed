@@ -3,89 +3,208 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>LSV Hessen – Newsroom</title>
+  <title>LSV Newsroom</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; background:#0b0f14; color:#e8eef6; }
-    header { padding: 16px 14px; position: sticky; top: 0; background: rgba(11,15,20,.92); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,.08); z-index: 10; }
-    h1 { font-size: 16px; margin: 0 0 8px; letter-spacing:.2px; }
-    .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-    select, input, button, textarea {
-      background:#121a24; color:#e8eef6; border:1px solid rgba(255,255,255,.12);
-      border-radius:10px; padding:10px 12px; font-size: 14px;
+    :root{
+      /* Rot-Theme (dezent, nicht knallig) */
+      --bg: #0c0607;
+      --bg2:#12090b;
+      --card:#120b0e;
+      --border: rgba(255,255,255,.10);
+      --text:#f3eef0;
+      --muted: rgba(243,238,240,.78);
+      --accent: #ff4d6d;      /* soft red */
+      --accent2:#ff8fa3;      /* lighter red */
+      --pillBg: rgba(255,77,109,.12);
+      --pillBorder: rgba(255,77,109,.28);
+      --shadow: rgba(0,0,0,.25);
     }
-    textarea { width: 100%; min-height: 92px; resize: vertical; }
-    button { cursor:pointer; }
-    main { padding: 14px; display:grid; gap:10px; }
-    .card { background:#101723; border:1px solid rgba(255,255,255,.10); border-radius:16px; padding:12px; display:grid; gap:10px; }
-    .meta { font-size: 12px; opacity:.85; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .title { font-size: 15px; font-weight: 700; margin: 0; line-height:1.25; }
-    .desc { font-size: 13px; opacity:.92; line-height:1.35; margin:0; }
-    a { color:#7cc0ff; text-decoration:none; }
-    .status { font-size:12px; opacity:.75; margin-top:8px; line-height:1.35; }
-    .pill { font-size:12px; padding:4px 8px; border-radius:999px; background:rgba(124,192,255,.12); border:1px solid rgba(124,192,255,.25); }
-    .danger { background:rgba(255,110,110,.10); border-color:rgba(255,110,110,.25); }
-    .ok { background:rgba(120,255,170,.08); border-color:rgba(120,255,170,.22); }
-    details { border:1px solid rgba(255,255,255,.10); border-radius: 16px; padding: 10px 12px; background:#0f1621; }
-    summary { cursor:pointer; user-select:none; font-size: 13px; opacity:.92; }
-    .tiny { font-size: 12px; opacity:.84; }
-    .grid2 { display:grid; grid-template-columns: 1fr; gap:10px; margin-top:10px; }
-    @media (min-width: 860px) { .grid2 { grid-template-columns: 1.2fr .8fr; } }
-    .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-           font-size: 12px; padding: 2px 6px; border-radius: 8px; border:1px solid rgba(255,255,255,.12); background:#121a24; }
-    .thumb { width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; border:1px solid rgba(255,255,255,.10); background:#0b0f14; }
-    .thumb img { width: 100%; height: 100%; object-fit: cover; display:block; }
-    .actions { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .split { display:grid; gap:10px; }
+
+    body{
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      margin:0; background:var(--bg); color:var(--text);
+    }
+
+    header{
+      padding: 16px 14px;
+      position: sticky; top:0; z-index:10;
+      background: rgba(12,6,7,.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    h1{ font-size:16px; margin:0 0 10px; letter-spacing:.2px; }
+
+    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+    select, input, button, textarea{
+      background: #140a0c;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      box-shadow: 0 6px 16px var(--shadow);
+    }
+
+    button{ cursor:pointer; border-color: rgba(255,77,109,.25); }
+    button:hover{ border-color: rgba(255,77,109,.45); }
+
+    textarea{ width:100%; min-height: 92px; resize: vertical; }
+
+    .pill{
+      font-size:12px; padding:4px 10px;
+      border-radius:999px;
+      background: var(--pillBg);
+      border:1px solid var(--pillBorder);
+      color: var(--text);
+      display:inline-flex; gap:6px; align-items:center;
+    }
+
+    .pillMuted{
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.12);
+      color: var(--muted);
+    }
+
+    .status{ font-size:12px; opacity:.8; margin-top:10px; line-height:1.35; color: var(--muted); }
+
+    details{
+      margin-top:10px;
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 16px;
+      padding: 10px 12px;
+      background: var(--bg2);
+      box-shadow: 0 10px 24px var(--shadow);
+    }
+
+    summary{ cursor:pointer; user-select:none; font-size:13px; opacity:.95; }
+
+    main{ padding: 14px; display:grid; gap: 12px; }
+
+    .card{
+      background: var(--card);
+      border:1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px;
+      box-shadow: 0 12px 30px var(--shadow);
+      display:grid;
+      gap:10px;
+    }
+
+    .meta{
+      font-size:12px;
+      color: var(--muted);
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+    }
+
+    .title{ font-size:15px; font-weight: 760; margin: 0; line-height:1.25; }
+    .desc{ font-size:13px; color: rgba(243,238,240,.92); margin:0; line-height:1.35; }
+
+    a{ color: var(--accent2); text-decoration:none; }
+    a:hover{ text-decoration: underline; }
+
+    .thumb{
+      width:100%;
+      aspect-ratio: 16/9;
+      border-radius: 16px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,.10);
+      background: #0b0f14;
+    }
+    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+    .pubRow{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .favicon{
+      width: 18px; height: 18px;
+      border-radius: 5px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      overflow:hidden;
+      flex: 0 0 auto;
+    }
+    .favicon img{ width:100%; height:100%; display:block; }
+
+    .grid2{ display:grid; grid-template-columns: 1fr; gap:10px; margin-top:10px; }
+    @media (min-width: 860px){ .grid2{ grid-template-columns: 1.1fr .9fr; } }
+
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      border:1px solid rgba(255,255,255,.12);
+      background:#140a0c;
+      color: rgba(243,238,240,.9);
+    }
+
+    .danger{
+      background: rgba(255, 120, 120, .10);
+      border-color: rgba(255, 120, 120, .30);
+    }
   </style>
 </head>
 <body>
 <header>
-  <h1>LSV Hessen – Newsroom (Live + 3 Monate Archiv)</h1>
+  <h1>LSV Newsroom</h1>
 
   <div class="row">
     <select id="engine"></select>
-    <select id="cluster"></select>
-    <input id="search" placeholder="Feinfilter (Titel/Quelle)" />
+    <select id="view"></select>
+    <input id="search" placeholder="Suche (Titel/Quelle/Tags)" />
     <button id="refresh">Refresh</button>
     <span class="pill" id="count">0 Artikel</span>
-    <span class="pill" id="last">—</span>
+    <span class="pill pillMuted" id="last">—</span>
   </div>
 
   <div class="row" style="margin-top:10px">
-    <label class="tiny">Von <input id="dateFrom" type="date" /></label>
-    <label class="tiny">Bis <input id="dateTo" type="date" /></label>
+    <label class="pill pillMuted">Von <input id="dateFrom" type="date" style="margin-left:8px" /></label>
+    <label class="pill pillMuted">Bis <input id="dateTo" type="date" style="margin-left:8px" /></label>
     <button id="saveDates">Datum speichern</button>
-    <span class="tiny">Tipp: leer lassen = kein Filter.</span>
+    <span class="status" style="margin:0">Leer lassen = kein Filter.</span>
   </div>
 
-  <details style="margin-top:10px">
-    <summary>⚙️ Keywords / Query bearbeiten</summary>
+  <details>
+    <summary>⚙️ Keyword-Kategorien bearbeiten</summary>
 
     <div class="grid2">
       <div>
-        <div class="tiny" style="margin:8px 0 6px">
-          Cluster-Query. Nutze <span class="kbd">OR</span>, <span class="kbd">AND</span>, <span class="kbd">NOT</span>, Klammern.
-          Wenn es leer bleibt: weniger <span class="kbd">AND</span>, mehr <span class="kbd">OR</span>.
+        <div class="status" style="margin-top:6px">
+          Das ist dein Setup: Kategorien = Keyword-Sets. Der Feed zeigt standardmäßig <b>alles</b> und taggt Artikel automatisch.
+          <br/>Tipp: Namen in <span class="kbd">"Anführungszeichen"</span> lassen.
         </div>
-        <textarea id="queryBox" placeholder="Query…"></textarea>
-        <div class="row" style="margin-top:8px">
-          <button id="saveQuery">Query speichern</button>
-          <button id="resetClusters" title="Setzt Cluster auf Default zurück">Reset Defaults</button>
-          <span class="pill ok" id="savedInfo" style="display:none">Gespeichert</span>
+
+        <div class="row" style="margin-top:10px">
+          <select id="catSelect"></select>
+          <button id="saveCat">Kategorie speichern</button>
+          <button id="resetAll" class="danger">Reset Defaults</button>
+        </div>
+
+        <textarea id="catBox" placeholder="Ein Keyword pro Zeile…"></textarea>
+
+        <div class="status">
+          Query-Logik: Wir erstellen automatisch eine OR-Suche aus allen Kategorien + optionalem Datumsfilter.
+          Wenn du’s custom willst, sag Bescheid – aber so ist es maximal stabil.
         </div>
       </div>
 
       <div>
-        <div class="tiny" style="margin:8px 0 6px">Quick Keywords (ein Begriff pro Zeile)</div>
-        <textarea id="kwBox" placeholder="Ein Keyword pro Zeile…"></textarea>
-        <div class="row" style="margin-top:8px">
-          <button id="applyKeywords">Keywords → Query</button>
-          <button id="saveKeywords">Keywords speichern</button>
+        <div class="status" style="margin-top:6px">
+          Engine & Datumsfilter wirken auf die Suche.
+          <br/>Auto-Refresh: <span class="kbd">90 Sekunden</span>.
         </div>
-        <div class="status">
-          Für exakte Namen: <span class="kbd">"Vorname Nachname"</span><br/>
-          Beispiel: <span class="kbd">"Kultusministerium Hessen"</span>
-        </div>
+
+        <details style="margin-top:10px">
+          <summary>🔍 Fortgeschritten: Basis-Query (optional)</summary>
+          <div class="status" style="margin-top:8px">
+            Diese Basis-Query wird immer dazu genommen (Kontext), z.B. Hessen/Schule.
+            Weniger strict = mehr Treffer.
+          </div>
+          <textarea id="baseQuery"></textarea>
+          <div class="row" style="margin-top:8px">
+            <button id="saveBase">Basis-Query speichern</button>
+          </div>
+        </details>
       </div>
     </div>
   </details>
@@ -97,59 +216,18 @@
 
 <script>
   // =======================
-  // DEFAULTS (deine Keywords)
+  // ENGINES (free)
   // =======================
-  const DEFAULT_KEYWORDS = [
-    'Luca Albert Dobrita',
-    'Ted Krämer',
-    'Laurenz Spies',
-    'LSV Hessen',
-    'KiJuIV',
-    'Kultusministerium Hessen',
-    'Bildung',
-    'Bundesschülerkonferenz',
-    'HUSKJ',
-    'Schülervertretung',
-    'Schulsprecher'
-  ];
-
-  // Cluster: bewusst eher "OR-lastig", damit du Treffer bekommst.
-  const DEFAULT_CLUSTERS = [
-    {
-      name: "LSV Hessen – Overall",
-      q: '("LSV Hessen" OR Landesschülervertretung OR Schülervertretung OR Schulsprecher OR "Bundesschülerkonferenz" OR HUSKJ OR KiJuIV OR Bildung OR Schule OR Schulen OR Schulpolitik OR Kultusministerium OR "Kultusministerium Hessen" OR HKM) (Hessen OR "Land Hessen")'
-    },
-    {
-      name: "Personen / Namen",
-      q: '("Luca Albert Dobrita" OR "Ted Krämer" OR "Laurenz Spies") (Hessen OR "LSV Hessen" OR Landesschülervertretung OR Schule OR Bildung OR Schülervertretung)'
-    },
-    {
-      name: "LSV / SV / Schulsprecher",
-      q: '("LSV Hessen" OR Landesschülervertretung OR Schülervertretung OR SV OR Schulsprecher OR Schülersprecher) (Hessen OR "Land Hessen") (Schule OR Schulen OR Bildung OR Demokratie OR Mitbestimmung)'
-    },
-    {
-      name: "Kultusministerium / HKM",
-      q: '("Kultusministerium Hessen" OR "Hessisches Kultusministerium" OR HKM OR Kultusministerium) (Schule OR Schulen OR Bildung OR Unterricht OR Abitur OR Schulgesetz OR Erlass OR Verordnung OR Lehrplan) (Hessen OR "Land Hessen")'
-    },
-    {
-      name: "Bundesebene / BSK / HUSKJ",
-      q: '("Bundesschülerkonferenz" OR BSK OR HUSKJ) (Bildung OR Schule OR Schulpolitik OR Demokratiebildung OR Unterricht)'
-    }
-  ];
-
-  // Such-Engines (free): Google News RSS & GDELT RSS (beide via Proxy, damit CORS keine Rolle spielt)
   const ENGINES = [
     {
       name: "Google News (RSS)",
       id: "google",
-      buildUrl: (query) => 'https://news.google.com/rss/search?q=' + encodeURIComponent(query) + '&hl=de&gl=DE&ceid=DE:de',
-      parser: "rss"
+      buildUrl: (query) => 'https://news.google.com/rss/search?q=' + encodeURIComponent(query) + '&hl=de&gl=DE&ceid=DE:de'
     },
     {
       name: "GDELT (RSS)",
       id: "gdelt",
       buildUrl: (query) => {
-        // ArticleList RSS
         const base = 'https://api.gdeltproject.org/api/v2/doc/doc';
         const params = new URLSearchParams({
           query,
@@ -159,380 +237,476 @@
           maxrecords: '50'
         });
         return base + '?' + params.toString();
-      },
-      parser: "rss"
+      }
     }
   ];
 
-  // Proxy (free)
+  // Free CORS Proxy
   const PROXY = (url) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
 
   // Archiv: 3 Monate
   const MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000;
 
-  // Auto-Refresh: 60s
-  const REFRESH_EVERY_MS = 60 * 1000;
+  // Auto-Refresh: 90 Sekunden
+  const REFRESH_EVERY_MS = 90 * 1000;
+
+  // =======================
+  // DEFAULTS: Kategorien/Keywords
+  // =======================
+  const DEFAULT_CATEGORIES = [
+    {
+      name: "Personen",
+      keywords: [
+        'Luca Albert Dobrita',
+        'Ted Krämer',
+        'Laurenz Spies'
+      ]
+    },
+    {
+      name: "Organisationen",
+      keywords: [
+        'LSV Hessen',
+        'Bundesschülerkonferenz',
+        'HUSKJ',
+        'KiJuIV'
+      ]
+    },
+    {
+      name: "Behörden / Politik",
+      keywords: [
+        'Kultusministerium Hessen',
+        'HKM',
+        'Hessisches Kultusministerium'
+      ]
+    },
+    {
+      name: "Themen",
+      keywords: [
+        'Bildung',
+        'Schülervertretung',
+        'Schulsprecher',
+        'Schule',
+        'Schulpolitik',
+        'Mitbestimmung'
+      ]
+    }
+  ];
+
+  // Basis-Kontext (nicht zu streng!)
+  const DEFAULT_BASE_QUERY = '(Hessen OR "Land Hessen" OR Frankfurt OR Wiesbaden OR Offenbach OR Darmstadt)';
 
   // =======================
   // STORAGE
   // =======================
-  const storeKey = "lsv_news_archive_v3";
-  const clustersKey = "lsv_news_clusters_v3";
-  const keywordsKey = "lsv_news_keywords_v3";
-  const settingsKey = "lsv_news_settings_v3";
+  const storeKey    = "lsv_news_archive_v4";
+  const configKey   = "lsv_news_config_v4";
 
   // =======================
   // STATE
   // =======================
   const $ = (id) => document.getElementById(id);
 
-  let archive = loadJSON(storeKey, {});
-  let clusters = loadJSON(clustersKey, DEFAULT_CLUSTERS);
-  let keywords = loadJSON(keywordsKey, DEFAULT_KEYWORDS);
-
-  let settings = loadJSON(settingsKey, {
+  const config = loadJSON(configKey, {
     engineId: "google",
     dateFrom: "",
-    dateTo: ""
+    dateTo: "",
+    baseQuery: DEFAULT_BASE_QUERY,
+    categories: DEFAULT_CATEGORIES
   });
 
-  let currentCluster = 0;
+  let archive = loadJSON(storeKey, {});
+  let currentCategoryIndex = 0;
 
   // =======================
   // INIT UI
   // =======================
   const engineSel = $("engine");
-  const clusterSel = $("cluster");
-  const queryBox = $("queryBox");
-  const kwBox = $("kwBox");
-  const dateFrom = $("dateFrom");
-  const dateTo = $("dateTo");
+  const viewSel   = $("view");
+  const searchInp = $("search");
+  const dateFrom  = $("dateFrom");
+  const dateTo    = $("dateTo");
+  const catSel    = $("catSelect");
+  const catBox    = $("catBox");
+  const baseBox   = $("baseQuery");
 
-  ENGINES.forEach((e) => {
-    const opt = document.createElement("option");
-    opt.value = e.id;
-    opt.textContent = e.name;
+  // Engine select
+  ENGINES.forEach(e=>{
+    const opt=document.createElement("option");
+    opt.value=e.id; opt.textContent=e.name;
     engineSel.appendChild(opt);
   });
+  engineSel.value = config.engineId;
 
-  engineSel.value = settings.engineId || "google";
-  dateFrom.value = settings.dateFrom || "";
-  dateTo.value = settings.dateTo || "";
+  // Views: All + each category
+  function rebuildViews(){
+    viewSel.innerHTML = "";
+    const all = document.createElement("option");
+    all.value = "__all__";
+    all.textContent = "Alle (Übersicht)";
+    viewSel.appendChild(all);
 
-  function rebuildClusterDropdown() {
-    clusterSel.innerHTML = "";
-    clusters.forEach((c, i) => {
-      const opt = document.createElement("option");
-      opt.value = String(i);
-      opt.textContent = c.name;
-      clusterSel.appendChild(opt);
+    config.categories.forEach((c, idx)=>{
+      const opt=document.createElement("option");
+      opt.value = String(idx);
+      opt.textContent = "Kategorie: " + c.name;
+      viewSel.appendChild(opt);
     });
-    clusterSel.value = String(currentCluster);
+    viewSel.value = "__all__";
   }
+  rebuildViews();
 
-  rebuildClusterDropdown();
-  queryBox.value = clusters[currentCluster]?.q || "";
-  kwBox.value = keywords.map(k => quoteIfNeeded(k)).join("\n");
+  // Date
+  dateFrom.value = config.dateFrom || "";
+  dateTo.value   = config.dateTo || "";
 
-  engineSel.addEventListener("change", async () => {
-    settings.engineId = engineSel.value;
-    saveJSON(settingsKey, settings);
-    $("status").textContent = "✅ Search Engine gespeichert. Lade News…";
+  // Category editor
+  function rebuildCategoryEditor(){
+    catSel.innerHTML="";
+    config.categories.forEach((c, idx)=>{
+      const opt=document.createElement("option");
+      opt.value=String(idx);
+      opt.textContent=c.name;
+      catSel.appendChild(opt);
+    });
+    catSel.value = String(currentCategoryIndex);
+    catBox.value = (config.categories[currentCategoryIndex]?.keywords || []).map(k=>quoteIfNeeded(k)).join("\n");
+  }
+  rebuildCategoryEditor();
+
+  baseBox.value = config.baseQuery || DEFAULT_BASE_QUERY;
+
+  // Events
+  engineSel.addEventListener("change", async ()=>{
+    config.engineId = engineSel.value;
+    saveJSON(configKey, config);
+    $("status").textContent = "✅ Engine gespeichert. Lade News…";
     await refresh();
   });
 
-  clusterSel.addEventListener("change", async () => {
-    currentCluster = Number(clusterSel.value);
-    queryBox.value = clusters[currentCluster]?.q || "";
+  viewSel.addEventListener("change", ()=>{
     render();
-    await refresh();
   });
 
-  $("saveDates").addEventListener("click", async () => {
-    settings.dateFrom = dateFrom.value || "";
-    settings.dateTo = dateTo.value || "";
-    saveJSON(settingsKey, settings);
+  $("refresh").addEventListener("click", refresh);
+  searchInp.addEventListener("input", render);
+
+  $("saveDates").addEventListener("click", async ()=>{
+    config.dateFrom = dateFrom.value || "";
+    config.dateTo = dateTo.value || "";
+    saveJSON(configKey, config);
     $("status").textContent = "✅ Datum gespeichert. Lade News…";
     await refresh();
   });
 
-  $("refresh").addEventListener("click", refresh);
-  $("search").addEventListener("input", render);
-
-  $("saveQuery").addEventListener("click", async () => {
-    const val = queryBox.value.trim();
-    if (!val) return;
-    clusters[currentCluster].q = val;
-    saveJSON(clustersKey, clusters);
-    flashSaved();
-    $("status").textContent = "✅ Query gespeichert. Lade News…";
-    await refresh();
+  catSel.addEventListener("change", ()=>{
+    currentCategoryIndex = Number(catSel.value);
+    rebuildCategoryEditor();
   });
 
-  $("resetClusters").addEventListener("click", async () => {
-    clusters = JSON.parse(JSON.stringify(DEFAULT_CLUSTERS));
-    saveJSON(clustersKey, clusters);
-    currentCluster = 0;
-    rebuildClusterDropdown();
-    clusterSel.value = "0";
-    queryBox.value = clusters[0].q;
+  $("saveCat").addEventListener("click", ()=>{
+    const lines = catBox.value.split("\n").map(s=>s.trim()).filter(Boolean);
+    config.categories[currentCategoryIndex].keywords = lines.map(unquote).filter(Boolean);
+    saveJSON(configKey, config);
+    $("status").textContent = "✅ Kategorie gespeichert.";
+    rebuildViews();
+    render();
+  });
+
+  $("resetAll").addEventListener("click", async ()=>{
+    config.categories = JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
+    config.baseQuery = DEFAULT_BASE_QUERY;
+    config.dateFrom = "";
+    config.dateTo = "";
+    config.engineId = "google";
+    saveJSON(configKey, config);
+
+    engineSel.value = "google";
+    dateFrom.value = "";
+    dateTo.value = "";
+    baseBox.value = DEFAULT_BASE_QUERY;
+    currentCategoryIndex = 0;
+    rebuildCategoryEditor();
+    rebuildViews();
+
     $("status").textContent = "✅ Defaults wiederhergestellt. Lade News…";
     await refresh();
   });
 
-  $("saveKeywords").addEventListener("click", () => {
-    const lines = kwBox.value.split("\n").map(s => s.trim()).filter(Boolean);
-    keywords = lines.map(unquote);
-    saveJSON(keywordsKey, keywords);
-    flashSaved();
-    $("status").textContent = "✅ Keywords gespeichert.";
-  });
-
-  $("applyKeywords").addEventListener("click", () => {
-    const lines = kwBox.value.split("\n").map(s => s.trim()).filter(Boolean);
-    const kws = lines.map(unquote).filter(Boolean);
-    if (!kws.length) return;
-
-    const orBlock = "(" + kws.map(k => quoteIfNeeded(k)).join(" OR ") + ")";
-    const existing = queryBox.value.trim();
-
-    // Keywords als zusätzliches OR-Set davor setzen, aber nicht zu streng machen.
-    const combined = existing ? `${orBlock} (${existing})` : orBlock;
-    queryBox.value = combined;
-
-    $("status").textContent = "🧩 Keywords in Query eingefügt. Jetzt: 'Query speichern'.";
+  $("saveBase").addEventListener("click", ()=>{
+    config.baseQuery = baseBox.value.trim() || DEFAULT_BASE_QUERY;
+    saveJSON(configKey, config);
+    $("status").textContent = "✅ Basis-Query gespeichert.";
   });
 
   // =======================
   // HELPERS
   // =======================
-  function loadJSON(key, fallback) {
-    try {
+  function loadJSON(key, fallback){
+    try{
       const raw = localStorage.getItem(key);
-      if (!raw) return fallback;
+      if(!raw) return fallback;
       return JSON.parse(raw);
-    } catch {
-      return fallback;
-    }
+    }catch{ return fallback; }
   }
-  function saveJSON(key, obj) {
+  function saveJSON(key, obj){
     localStorage.setItem(key, JSON.stringify(obj));
   }
-  function flashSaved() {
-    const el = $("savedInfo");
-    el.style.display = "inline-flex";
-    setTimeout(() => el.style.display = "none", 1200);
-  }
-
-  function pruneArchive() {
+  function pruneArchive(){
     const now = Date.now();
-    for (const [id, item] of Object.entries(archive)) {
+    for(const [id,item] of Object.entries(archive)){
       const t = item?.published || 0;
-      if (!t || (now - t) > MAX_AGE_MS) delete archive[id];
+      if(!t || (now - t) > MAX_AGE_MS) delete archive[id];
     }
   }
-
-  function hashId(str) {
-    let h = 0;
-    for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+  function hashId(str){
+    let h=0;
+    for(let i=0;i<str.length;i++) h=(h*31 + str.charCodeAt(i))>>>0;
     return String(h);
   }
-
-  function stripHtml(s) {
-    const div = document.createElement("div");
-    div.innerHTML = s || "";
+  function stripHtml(s){
+    const div=document.createElement("div");
+    div.innerHTML=s||"";
     return (div.textContent || div.innerText || "").trim();
   }
-
-  function fmtDate(ms) {
-    try { return new Date(ms).toLocaleString("de-DE"); }
-    catch { return ""; }
+  function fmtDate(ms){
+    try{ return new Date(ms).toLocaleString("de-DE"); }catch{ return ""; }
   }
-
-  function escapeHtml(s="") {
+  function escapeHtml(s=""){
     return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
   }
-  function escapeAttr(s="") { return escapeHtml(s); }
+  function escapeAttr(s=""){ return escapeHtml(s); }
 
-  function unquote(line) {
-    return line.replace(/^"+|"+$/g, "").trim();
-  }
-
-  function quoteIfNeeded(k) {
-    const kk = (k || "").replaceAll('"','').trim();
-    if (!kk) return "";
-    if (/\s/.test(kk) || /[äöüÄÖÜß]/.test(kk) || /[()]/.test(kk)) return `"${kk}"`;
+  function unquote(line){ return line.replace(/^"+|"+$/g,"").trim(); }
+  function quoteIfNeeded(k){
+    const kk=(k||"").replaceAll('"',"").trim();
+    if(!kk) return "";
+    if(/\s/.test(kk) || /[äöüÄÖÜß]/.test(kk) || /[()]/.test(kk)) return `"${kk}"`;
     return kk;
   }
 
-  function applyDateFilterToQuery(q) {
-    // Datumsfilter als after:/before: (YYYY-MM-DD). Leer => weglassen.
-    const from = settings.dateFrom ? ` after:${settings.dateFrom}` : "";
-    const to = settings.dateTo ? ` before:${settings.dateTo}` : "";
-    return (q || "") + from + to;
+  function applyDateFilter(q){
+    const from = config.dateFrom ? ` after:${config.dateFrom}` : "";
+    const to   = config.dateTo   ? ` before:${config.dateTo}` : "";
+    return (q||"") + from + to;
   }
 
-  function extractFirstImageUrlFromHtml(html) {
-    // Google News description enthält manchmal <img ... src="...">
-    if (!html) return "";
+  function extractFirstImageUrlFromHtml(html){
+    if(!html) return "";
     const m = html.match(/<img[^>]+src=["']([^"']+)["']/i);
     return m ? m[1] : "";
   }
-
-  function getMediaContentUrl(itemNode) {
-    // <media:content url="..."> oder <media:thumbnail url="...">
-    const mediaContent = itemNode.getElementsByTagName("media:content");
-    if (mediaContent && mediaContent[0] && mediaContent[0].getAttribute) {
-      const u = mediaContent[0].getAttribute("url");
-      if (u) return u;
+  function getMediaUrl(itemNode){
+    const mc=itemNode.getElementsByTagName("media:content");
+    if(mc && mc[0]?.getAttribute){
+      const u=mc[0].getAttribute("url"); if(u) return u;
     }
-    const mediaThumb = itemNode.getElementsByTagName("media:thumbnail");
-    if (mediaThumb && mediaThumb[0] && mediaThumb[0].getAttribute) {
-      const u = mediaThumb[0].getAttribute("url");
-      if (u) return u;
+    const mt=itemNode.getElementsByTagName("media:thumbnail");
+    if(mt && mt[0]?.getAttribute){
+      const u=mt[0].getAttribute("url"); if(u) return u;
     }
     return "";
   }
-
-  function parseRSS(xmlText, clusterName) {
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(xmlText, "text/xml");
-    const items = [...xml.querySelectorAll("item")].slice(0, 60);
-
-    const parsed = [];
-    for (const it of items) {
-      const title = it.querySelector("title")?.textContent?.trim() || "";
-      const link = it.querySelector("link")?.textContent?.trim() || "";
-      const pubDate = it.querySelector("pubDate")?.textContent?.trim() || "";
-      const source = it.querySelector("source")?.textContent?.trim() || "Quelle";
-      const descRaw = it.querySelector("description")?.textContent?.trim() || "";
-
-      const published = pubDate ? Date.parse(pubDate) : Date.now();
-      const id = hashId(link || title);
-
-      const mediaUrl = getMediaContentUrl(it) || extractFirstImageUrlFromHtml(descRaw);
-      const desc = stripHtml(descRaw);
-
-      parsed.push({ id, title, link, source, published, desc, img: mediaUrl, cluster: clusterName });
-    }
-    return parsed;
+  function getDomain(url){
+    try{ return new URL(url).hostname.replace(/^www\./,""); }catch{ return ""; }
+  }
+  function faviconUrl(domain){
+    // zuverlässig + free + Google-News-like
+    return domain ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64` : "";
   }
 
-  function getEngine() {
-    const id = engineSel.value || "google";
-    return ENGINES.find(e => e.id === id) || ENGINES[0];
+  // Tags (Kategoriezuordnung) anhand Keyword-Match
+  function computeTags(text){
+    const t = (text||"").toLowerCase();
+    const tags = [];
+    for(const cat of config.categories){
+      const hit = (cat.keywords||[]).some(k=>{
+        const kk=(k||"").toLowerCase();
+        return kk && t.includes(kk);
+      });
+      if(hit) tags.push(cat.name);
+    }
+    return tags;
+  }
+
+  // Build Query = (OR über alle Keywords) + baseQuery
+  function buildGlobalQuery(){
+    const allKeywords = config.categories.flatMap(c=>c.keywords||[]).filter(Boolean);
+    const orBlock = allKeywords.length
+      ? "(" + allKeywords.map(k=>quoteIfNeeded(k)).filter(Boolean).join(" OR ") + ")"
+      : "";
+
+    const base = (config.baseQuery || "").trim();
+    // bewusst nicht zu streng: wir setzen Blöcke nebeneinander (Google interpretiert das sinnvoll),
+    // statt überall AND zu erzwingen.
+    let q = "";
+    if(orBlock) q += orBlock + " ";
+    if(base) q += "(" + base + ")";
+
+    return q.trim() || "Schule Hessen";
+  }
+
+  function parseRSS(xmlText){
+    const parser=new DOMParser();
+    const xml=parser.parseFromString(xmlText,"text/xml");
+    const items=[...xml.querySelectorAll("item")].slice(0,60);
+
+    const out=[];
+    for(const it of items){
+      const title = it.querySelector("title")?.textContent?.trim() || "";
+      const link  = it.querySelector("link")?.textContent?.trim() || "";
+      const pub   = it.querySelector("pubDate")?.textContent?.trim() || "";
+      const source= it.querySelector("source")?.textContent?.trim() || "Quelle";
+      const descRaw = it.querySelector("description")?.textContent?.trim() || "";
+
+      const published = pub ? Date.parse(pub) : Date.now();
+      const id = hashId(link || title);
+
+      const img = getMediaUrl(it) || extractFirstImageUrlFromHtml(descRaw);
+      const desc = stripHtml(descRaw);
+
+      const domain = getDomain(link);
+      const fav = faviconUrl(domain);
+
+      const tags = computeTags(`${title} ${desc} ${source}`);
+
+      out.push({ id, title, link, published, source, desc, img, domain, fav, tags });
+    }
+    return out;
+  }
+
+  function getEngine(){
+    const id=config.engineId || "google";
+    return ENGINES.find(e=>e.id===id) || ENGINES[0];
   }
 
   // =======================
   // CORE
   // =======================
-  async function refresh() {
-    const cluster = clusters[currentCluster];
-    if (!cluster || !cluster.q) return;
-
+  async function refresh(){
     pruneArchive();
     $("status").textContent = "Hole News…";
 
-    try {
-      const engine = getEngine();
-      const qWithDate = applyDateFilterToQuery(cluster.q);
-      const url = engine.buildUrl(qWithDate);
+    try{
+      const engine=getEngine();
+      const q = applyDateFilter(buildGlobalQuery());
+      const url = engine.buildUrl(q);
 
-      const res = await fetch(PROXY(url), { cache: "no-store" });
-      if (!res.ok) throw new Error("Proxy HTTP " + res.status);
+      const res = await fetch(PROXY(url), { cache:"no-store" });
+      if(!res.ok) throw new Error("Proxy HTTP " + res.status);
 
       const text = await res.text();
-      const items = parseRSS(text, cluster.name);
+      const items = parseRSS(text);
 
-      let added = 0;
-      for (const it of items) {
-        if (!archive[it.id]) { archive[it.id] = it; added++; }
-        else {
-          // Update minimal fields
+      let added=0;
+      for(const it of items){
+        if(!archive[it.id]){ archive[it.id]=it; added++; }
+        else{
           archive[it.id].published = archive[it.id].published || it.published;
           archive[it.id].img = archive[it.id].img || it.img;
-          archive[it.id].source = archive[it.id].source || it.source;
+          archive[it.id].fav = archive[it.id].fav || it.fav;
+          archive[it.id].domain = archive[it.id].domain || it.domain;
+          archive[it.id].tags = (archive[it.id].tags && archive[it.id].tags.length) ? archive[it.id].tags : it.tags;
         }
       }
 
       saveJSON(storeKey, archive);
       $("last").textContent = "Update: " + new Date().toLocaleTimeString("de-DE");
-      $("status").textContent = added ? `✅ ${added} neue Artikel.` : "✅ Keine neuen Treffer (falls dauerhaft: Query lockern).";
+      $("status").textContent = added ? `✅ ${added} neue Artikel.` : "✅ Keine neuen Treffer. (Wenn’s leer ist: Keywords/Basis-Query lockern.)";
       render();
-    } catch (e) {
+    }catch(e){
       console.error(e);
-      $("status").textContent = "⚠️ Laden fehlgeschlagen. (Free Proxy kann manchmal schwanken.)";
+      $("status").textContent = "⚠️ Laden fehlgeschlagen. Free Proxy kann kurz spinnen.";
       render(true);
     }
   }
 
-  function render(isError=false) {
+  function render(isError=false){
     pruneArchive();
 
-    const filter = $("search").value.trim().toLowerCase();
-    const clusterName = clusters[currentCluster]?.name;
+    const filter = (searchInp.value || "").trim().toLowerCase();
+    const view = viewSel.value;
 
-    const items = Object.values(archive)
-      .filter(x => x.cluster === clusterName)
-      .filter(x => !filter || (x.title + " " + x.source).toLowerCase().includes(filter))
-      .sort((a,b) => (b.published||0) - (a.published||0));
+    let items = Object.values(archive).sort((a,b)=>(b.published||0)-(a.published||0));
+
+    // View filter
+    if(view !== "__all__"){
+      const idx = Number(view);
+      const catName = config.categories[idx]?.name;
+      if(catName){
+        items = items.filter(x => (x.tags||[]).includes(catName));
+      }
+    }
+
+    // Text filter
+    if(filter){
+      items = items.filter(x => (`${x.title} ${x.source} ${(x.tags||[]).join(" ")} ${x.domain}`.toLowerCase()).includes(filter));
+    }
 
     $("count").textContent = `${items.length} Artikel`;
 
     const root = $("list");
     root.innerHTML = "";
 
-    if (isError) {
-      const warn = document.createElement("div");
-      warn.className = "card";
+    if(isError){
+      const warn=document.createElement("div");
+      warn.className="card";
       warn.innerHTML = `
         <div class="meta"><span class="pill danger">Hinweis</span><span>Proxy/Quelle hat kurz gezickt</span></div>
-        <p class="desc">Refresh später nochmal. Wenn das dauernd passiert: Proxy über Cloudflare (immer noch free) – sag Bescheid, dann kriegst du den Code.</p>`;
+        <p class="desc">Refresh später nochmal. Wenn das dauerhaft nervt: ich geb dir den free Cloudflare-Proxy (rock solid).</p>
+      `;
       root.appendChild(warn);
     }
 
-    if (!items.length) {
-      const empty = document.createElement("div");
-      empty.className = "card";
+    if(!items.length){
+      const empty=document.createElement("div");
+      empty.className="card";
       empty.innerHTML = `
-        <div class="meta"><span class="pill">Tipp</span><span>0 Treffer</span></div>
-        <h2 class="title">Noch keine Artikel für dieses Cluster</h2>
+        <div class="meta"><span class="pill">0 Treffer</span><span class="pill pillMuted">Quick Fix</span></div>
+        <h2 class="title">Gerade keine Artikel im Feed</h2>
         <p class="desc">
-          Quick-Fix:
-          <ol>
-            <li>Engine testweise auf <b>Google News</b> stellen.</li>
-            <li>Datumfilter leeren.</li>
-            <li>Query lockern (weniger AND, mehr OR).</li>
-            <li>Test-Query: <span class="kbd">Schule Hessen</span></li>
-          </ol>
-        </p>`;
+          1) Datumfilter leeren<br/>
+          2) Basis-Query weniger strict machen (z.B. nur <span class="kbd">Hessen</span>)<br/>
+          3) Test: in Themen-Kategorie <span class="kbd">Schule</span> & <span class="kbd">Bildung</span> drin lassen
+        </p>
+      `;
       root.appendChild(empty);
       return;
     }
 
-    for (const it of items) {
-      const el = document.createElement("div");
-      el.className = "card";
+    for(const it of items){
+      const el=document.createElement("div");
+      el.className="card";
 
-      const imgHtml = it.img ? `
-        <div class="thumb">
-          <img src="${escapeAttr(it.img)}" alt="Vorschaubild" loading="lazy" />
-        </div>` : "";
+      // Bild-Logik: echtes Preview wenn vorhanden, sonst "Publisher Icon" als News-like Optik
+      const hasImg = !!it.img;
+      const thumb = hasImg
+        ? `<div class="thumb"><img src="${escapeAttr(it.img)}" alt="Vorschaubild" loading="lazy"></div>`
+        : "";
+
+      const fav = it.fav
+        ? `<span class="favicon"><img src="${escapeAttr(it.fav)}" alt="" loading="lazy"></span>`
+        : "";
+
+      const tags = (it.tags||[]).slice(0,3).map(t=>`<span class="pill">${escapeHtml(t)}</span>`).join("");
 
       el.innerHTML = `
-        ${imgHtml}
-        <div class="meta">
-          <span>${fmtDate(it.published)}</span>
-          <span>•</span>
-          <span class="pill">${escapeHtml(it.source || "Quelle")}</span>
-          <span class="pill">${escapeHtml(it.cluster)}</span>
+        ${thumb}
+        <div class="meta pubRow">
+          ${fav}
+          <span>${escapeHtml(it.source || "Quelle")}</span>
+          ${it.domain ? `<span class="pill pillMuted">${escapeHtml(it.domain)}</span>` : ""}
+          <span class="pill pillMuted">${escapeHtml(fmtDate(it.published))}</span>
         </div>
         <h2 class="title">${escapeHtml(it.title)}</h2>
-        <p class="desc">${escapeHtml((it.desc || "").slice(0, 260))}${(it.desc || "").length > 260 ? "…" : ""}</p>
-        <div class="actions">
+        <p class="desc">${escapeHtml((it.desc||"").slice(0, 240))}${(it.desc||"").length>240 ? "…" : ""}</p>
+        <div class="row" style="gap:8px">
+          ${tags || `<span class="pill pillMuted">ungetaggt</span>`}
+        </div>
+        <div class="row">
           <a href="${escapeAttr(it.link)}" target="_blank" rel="noopener">Artikel öffnen →</a>
         </div>
       `;
+
       root.appendChild(el);
     }
   }
@@ -540,7 +714,7 @@
   // =======================
   // START
   // =======================
-  (async () => {
+  (async ()=>{
     render();
     await refresh();
     setInterval(refresh, REFRESH_EVERY_MS);

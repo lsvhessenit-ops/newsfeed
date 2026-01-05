@@ -6,18 +6,20 @@
   <title>LSV Newsroom</title>
   <style>
     :root{
-      /* Rot-Theme (dezent, nicht knallig) */
-      --bg: #0c0607;
-      --bg2:#12090b;
-      --card:#120b0e;
+      /* Wirklich rot: dunkles Weinrot + roter Accent */
+      --bg: #1a070a;
+      --bg2:#22090d;
+      --card:#240a0f;
       --border: rgba(255,255,255,.10);
-      --text:#f3eef0;
-      --muted: rgba(243,238,240,.78);
-      --accent: #ff4d6d;      /* soft red */
-      --accent2:#ff8fa3;      /* lighter red */
-      --pillBg: rgba(255,77,109,.12);
-      --pillBorder: rgba(255,77,109,.28);
-      --shadow: rgba(0,0,0,.25);
+      --text:#fff3f5;
+      --muted: rgba(255,243,245,.78);
+
+      --accent: #ff1f4a;   /* echtes Rot */
+      --accent2:#ff6b86;   /* helleres Rot */
+      --pillBg: rgba(255,31,74,.14);
+      --pillBorder: rgba(255,31,74,.30);
+
+      --shadow: rgba(0,0,0,.30);
     }
 
     body{
@@ -28,7 +30,7 @@
     header{
       padding: 16px 14px;
       position: sticky; top:0; z-index:10;
-      background: rgba(12,6,7,.92);
+      background: rgba(26,7,10,.92);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(255,255,255,.08);
     }
@@ -37,20 +39,18 @@
 
     .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
 
-    select, input, button, textarea{
-      background: #140a0c;
+    select, input, button{
+      background: #2a0c12;
       color: var(--text);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 14px;
       padding: 10px 12px;
       font-size: 14px;
-      box-shadow: 0 6px 16px var(--shadow);
+      box-shadow: 0 10px 22px var(--shadow);
     }
 
-    button{ cursor:pointer; border-color: rgba(255,77,109,.25); }
-    button:hover{ border-color: rgba(255,77,109,.45); }
-
-    textarea{ width:100%; min-height: 92px; resize: vertical; }
+    button{ cursor:pointer; border-color: rgba(255,31,74,.28); }
+    button:hover{ border-color: rgba(255,31,74,.55); }
 
     .pill{
       font-size:12px; padding:4px 10px;
@@ -63,22 +63,11 @@
 
     .pillMuted{
       background: rgba(255,255,255,.06);
-      border-color: rgba(255,255,255,.12);
+      border-color: rgba(255,255,255,.14);
       color: var(--muted);
     }
 
-    .status{ font-size:12px; opacity:.8; margin-top:10px; line-height:1.35; color: var(--muted); }
-
-    details{
-      margin-top:10px;
-      border:1px solid rgba(255,255,255,.10);
-      border-radius: 16px;
-      padding: 10px 12px;
-      background: var(--bg2);
-      box-shadow: 0 10px 24px var(--shadow);
-    }
-
-    summary{ cursor:pointer; user-select:none; font-size:13px; opacity:.95; }
+    .status{ font-size:12px; margin-top:10px; line-height:1.35; color: var(--muted); }
 
     main{ padding: 14px; display:grid; gap: 12px; }
 
@@ -87,7 +76,7 @@
       border:1px solid var(--border);
       border-radius: 18px;
       padding: 12px;
-      box-shadow: 0 12px 30px var(--shadow);
+      box-shadow: 0 14px 32px var(--shadow);
       display:grid;
       gap:10px;
     }
@@ -99,7 +88,7 @@
     }
 
     .title{ font-size:15px; font-weight: 760; margin: 0; line-height:1.25; }
-    .desc{ font-size:13px; color: rgba(243,238,240,.92); margin:0; line-height:1.35; }
+    .desc{ font-size:13px; color: rgba(255,243,245,.92); margin:0; line-height:1.35; }
 
     a{ color: var(--accent2); text-decoration:none; }
     a:hover{ text-decoration: underline; }
@@ -110,33 +99,22 @@
       border-radius: 16px;
       overflow:hidden;
       border: 1px solid rgba(255,255,255,.10);
-      background: #0b0f14;
+      background: #120507;
     }
     .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
 
     .pubRow{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
     .favicon{
       width: 18px; height: 18px;
-      border-radius: 5px;
-      border:1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.05);
+      border-radius: 6px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
       overflow:hidden;
       flex: 0 0 auto;
     }
     .favicon img{ width:100%; height:100%; display:block; }
 
-    .grid2{ display:grid; grid-template-columns: 1fr; gap:10px; margin-top:10px; }
-    @media (min-width: 860px){ .grid2{ grid-template-columns: 1.1fr .9fr; } }
-
-    .kbd{
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 12px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      border:1px solid rgba(255,255,255,.12);
-      background:#140a0c;
-      color: rgba(243,238,240,.9);
-    }
+    .tagRow{ display:flex; gap:8px; flex-wrap:wrap; }
 
     .danger{
       background: rgba(255, 120, 120, .10);
@@ -150,64 +128,11 @@
 
   <div class="row">
     <select id="engine"></select>
-    <select id="view"></select>
     <input id="search" placeholder="Suche (Titel/Quelle/Tags)" />
     <button id="refresh">Refresh</button>
     <span class="pill" id="count">0 Artikel</span>
     <span class="pill pillMuted" id="last">—</span>
   </div>
-
-  <div class="row" style="margin-top:10px">
-    <label class="pill pillMuted">Von <input id="dateFrom" type="date" style="margin-left:8px" /></label>
-    <label class="pill pillMuted">Bis <input id="dateTo" type="date" style="margin-left:8px" /></label>
-    <button id="saveDates">Datum speichern</button>
-    <span class="status" style="margin:0">Leer lassen = kein Filter.</span>
-  </div>
-
-  <details>
-    <summary>⚙️ Keyword-Kategorien bearbeiten</summary>
-
-    <div class="grid2">
-      <div>
-        <div class="status" style="margin-top:6px">
-          Das ist dein Setup: Kategorien = Keyword-Sets. Der Feed zeigt standardmäßig <b>alles</b> und taggt Artikel automatisch.
-          <br/>Tipp: Namen in <span class="kbd">"Anführungszeichen"</span> lassen.
-        </div>
-
-        <div class="row" style="margin-top:10px">
-          <select id="catSelect"></select>
-          <button id="saveCat">Kategorie speichern</button>
-          <button id="resetAll" class="danger">Reset Defaults</button>
-        </div>
-
-        <textarea id="catBox" placeholder="Ein Keyword pro Zeile…"></textarea>
-
-        <div class="status">
-          Query-Logik: Wir erstellen automatisch eine OR-Suche aus allen Kategorien + optionalem Datumsfilter.
-          Wenn du’s custom willst, sag Bescheid – aber so ist es maximal stabil.
-        </div>
-      </div>
-
-      <div>
-        <div class="status" style="margin-top:6px">
-          Engine & Datumsfilter wirken auf die Suche.
-          <br/>Auto-Refresh: <span class="kbd">90 Sekunden</span>.
-        </div>
-
-        <details style="margin-top:10px">
-          <summary>🔍 Fortgeschritten: Basis-Query (optional)</summary>
-          <div class="status" style="margin-top:8px">
-            Diese Basis-Query wird immer dazu genommen (Kontext), z.B. Hessen/Schule.
-            Weniger strict = mehr Treffer.
-          </div>
-          <textarea id="baseQuery"></textarea>
-          <div class="row" style="margin-top:8px">
-            <button id="saveBase">Basis-Query speichern</button>
-          </div>
-        </details>
-      </div>
-    </div>
-  </details>
 
   <div class="status" id="status">Ready.</div>
 </header>
@@ -220,12 +145,12 @@
   // =======================
   const ENGINES = [
     {
-      name: "Google News (RSS)",
+      name: "Google News",
       id: "google",
       buildUrl: (query) => 'https://news.google.com/rss/search?q=' + encodeURIComponent(query) + '&hl=de&gl=DE&ceid=DE:de'
     },
     {
-      name: "GDELT (RSS)",
+      name: "GDELT",
       id: "gdelt",
       buildUrl: (query) => {
         const base = 'https://api.gdeltproject.org/api/v2/doc/doc';
@@ -251,192 +176,54 @@
   const REFRESH_EVERY_MS = 90 * 1000;
 
   // =======================
-  // DEFAULTS: Kategorien/Keywords
+  // LOCKED: Kategorien (nicht editierbar)
   // =======================
-  const DEFAULT_CATEGORIES = [
-    {
-      name: "Personen",
-      keywords: [
-        'Luca Albert Dobrita',
-        'Ted Krämer',
-        'Laurenz Spies'
-      ]
-    },
-    {
-      name: "Organisationen",
-      keywords: [
-        'LSV Hessen',
-        'Bundesschülerkonferenz',
-        'HUSKJ',
-        'KiJuIV'
-      ]
-    },
-    {
-      name: "Behörden / Politik",
-      keywords: [
-        'Kultusministerium Hessen',
-        'HKM',
-        'Hessisches Kultusministerium'
-      ]
-    },
-    {
-      name: "Themen",
-      keywords: [
-        'Bildung',
-        'Schülervertretung',
-        'Schulsprecher',
-        'Schule',
-        'Schulpolitik',
-        'Mitbestimmung'
-      ]
-    }
+  const CATEGORIES = [
+    { name: "Personen", keywords: ['Luca Albert Dobrita','Ted Krämer','Laurenz Spies'] },
+    { name: "Organisationen", keywords: ['LSV Hessen','Bundesschülerkonferenz','HUSKJ','KiJuIV'] },
+    { name: "Behörden/Politik", keywords: ['Kultusministerium Hessen','HKM','Hessisches Kultusministerium','Kultusministerium'] },
+    { name: "Themen", keywords: ['Bildung','Schülervertretung','Schulsprecher','Schule','Schulpolitik','Mitbestimmung'] }
   ];
 
-  // Basis-Kontext (nicht zu streng!)
-  const DEFAULT_BASE_QUERY = '(Hessen OR "Land Hessen" OR Frankfurt OR Wiesbaden OR Offenbach OR Darmstadt)';
+  // Basis-Kontext, damit Treffer „Hessen“-nah bleiben, aber nicht zu eng
+  const BASE_QUERY = '(Hessen OR "Land Hessen" OR Frankfurt OR Wiesbaden OR Offenbach OR Darmstadt)';
 
   // =======================
   // STORAGE
   // =======================
-  const storeKey    = "lsv_news_archive_v4";
-  const configKey   = "lsv_news_config_v4";
+  const storeKey  = "lsv_news_archive_locked_v1";
+  const settingsKey = "lsv_news_settings_locked_v1";
 
   // =======================
   // STATE
   // =======================
   const $ = (id) => document.getElementById(id);
 
-  const config = loadJSON(configKey, {
-    engineId: "google",
-    dateFrom: "",
-    dateTo: "",
-    baseQuery: DEFAULT_BASE_QUERY,
-    categories: DEFAULT_CATEGORIES
-  });
-
   let archive = loadJSON(storeKey, {});
-  let currentCategoryIndex = 0;
+  let settings = loadJSON(settingsKey, { engineId: "google" });
 
   // =======================
   // INIT UI
   // =======================
   const engineSel = $("engine");
-  const viewSel   = $("view");
   const searchInp = $("search");
-  const dateFrom  = $("dateFrom");
-  const dateTo    = $("dateTo");
-  const catSel    = $("catSelect");
-  const catBox    = $("catBox");
-  const baseBox   = $("baseQuery");
 
-  // Engine select
   ENGINES.forEach(e=>{
     const opt=document.createElement("option");
     opt.value=e.id; opt.textContent=e.name;
     engineSel.appendChild(opt);
   });
-  engineSel.value = config.engineId;
+  engineSel.value = settings.engineId || "google";
 
-  // Views: All + each category
-  function rebuildViews(){
-    viewSel.innerHTML = "";
-    const all = document.createElement("option");
-    all.value = "__all__";
-    all.textContent = "Alle (Übersicht)";
-    viewSel.appendChild(all);
-
-    config.categories.forEach((c, idx)=>{
-      const opt=document.createElement("option");
-      opt.value = String(idx);
-      opt.textContent = "Kategorie: " + c.name;
-      viewSel.appendChild(opt);
-    });
-    viewSel.value = "__all__";
-  }
-  rebuildViews();
-
-  // Date
-  dateFrom.value = config.dateFrom || "";
-  dateTo.value   = config.dateTo || "";
-
-  // Category editor
-  function rebuildCategoryEditor(){
-    catSel.innerHTML="";
-    config.categories.forEach((c, idx)=>{
-      const opt=document.createElement("option");
-      opt.value=String(idx);
-      opt.textContent=c.name;
-      catSel.appendChild(opt);
-    });
-    catSel.value = String(currentCategoryIndex);
-    catBox.value = (config.categories[currentCategoryIndex]?.keywords || []).map(k=>quoteIfNeeded(k)).join("\n");
-  }
-  rebuildCategoryEditor();
-
-  baseBox.value = config.baseQuery || DEFAULT_BASE_QUERY;
-
-  // Events
   engineSel.addEventListener("change", async ()=>{
-    config.engineId = engineSel.value;
-    saveJSON(configKey, config);
+    settings.engineId = engineSel.value;
+    saveJSON(settingsKey, settings);
     $("status").textContent = "✅ Engine gespeichert. Lade News…";
     await refresh();
   });
 
-  viewSel.addEventListener("change", ()=>{
-    render();
-  });
-
   $("refresh").addEventListener("click", refresh);
   searchInp.addEventListener("input", render);
-
-  $("saveDates").addEventListener("click", async ()=>{
-    config.dateFrom = dateFrom.value || "";
-    config.dateTo = dateTo.value || "";
-    saveJSON(configKey, config);
-    $("status").textContent = "✅ Datum gespeichert. Lade News…";
-    await refresh();
-  });
-
-  catSel.addEventListener("change", ()=>{
-    currentCategoryIndex = Number(catSel.value);
-    rebuildCategoryEditor();
-  });
-
-  $("saveCat").addEventListener("click", ()=>{
-    const lines = catBox.value.split("\n").map(s=>s.trim()).filter(Boolean);
-    config.categories[currentCategoryIndex].keywords = lines.map(unquote).filter(Boolean);
-    saveJSON(configKey, config);
-    $("status").textContent = "✅ Kategorie gespeichert.";
-    rebuildViews();
-    render();
-  });
-
-  $("resetAll").addEventListener("click", async ()=>{
-    config.categories = JSON.parse(JSON.stringify(DEFAULT_CATEGORIES));
-    config.baseQuery = DEFAULT_BASE_QUERY;
-    config.dateFrom = "";
-    config.dateTo = "";
-    config.engineId = "google";
-    saveJSON(configKey, config);
-
-    engineSel.value = "google";
-    dateFrom.value = "";
-    dateTo.value = "";
-    baseBox.value = DEFAULT_BASE_QUERY;
-    currentCategoryIndex = 0;
-    rebuildCategoryEditor();
-    rebuildViews();
-
-    $("status").textContent = "✅ Defaults wiederhergestellt. Lade News…";
-    await refresh();
-  });
-
-  $("saveBase").addEventListener("click", ()=>{
-    config.baseQuery = baseBox.value.trim() || DEFAULT_BASE_QUERY;
-    saveJSON(configKey, config);
-    $("status").textContent = "✅ Basis-Query gespeichert.";
-  });
 
   // =======================
   // HELPERS
@@ -476,20 +263,6 @@
   }
   function escapeAttr(s=""){ return escapeHtml(s); }
 
-  function unquote(line){ return line.replace(/^"+|"+$/g,"").trim(); }
-  function quoteIfNeeded(k){
-    const kk=(k||"").replaceAll('"',"").trim();
-    if(!kk) return "";
-    if(/\s/.test(kk) || /[äöüÄÖÜß]/.test(kk) || /[()]/.test(kk)) return `"${kk}"`;
-    return kk;
-  }
-
-  function applyDateFilter(q){
-    const from = config.dateFrom ? ` after:${config.dateFrom}` : "";
-    const to   = config.dateTo   ? ` before:${config.dateTo}` : "";
-    return (q||"") + from + to;
-  }
-
   function extractFirstImageUrlFromHtml(html){
     if(!html) return "";
     const m = html.match(/<img[^>]+src=["']([^"']+)["']/i);
@@ -510,15 +283,13 @@
     try{ return new URL(url).hostname.replace(/^www\./,""); }catch{ return ""; }
   }
   function faviconUrl(domain){
-    // zuverlässig + free + Google-News-like
     return domain ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64` : "";
   }
 
-  // Tags (Kategoriezuordnung) anhand Keyword-Match
   function computeTags(text){
     const t = (text||"").toLowerCase();
     const tags = [];
-    for(const cat of config.categories){
+    for(const cat of CATEGORIES){
       const hit = (cat.keywords||[]).some(k=>{
         const kk=(k||"").toLowerCase();
         return kk && t.includes(kk);
@@ -528,21 +299,24 @@
     return tags;
   }
 
-  // Build Query = (OR über alle Keywords) + baseQuery
   function buildGlobalQuery(){
-    const allKeywords = config.categories.flatMap(c=>c.keywords||[]).filter(Boolean);
+    const allKeywords = CATEGORIES.flatMap(c=>c.keywords||[]).filter(Boolean);
     const orBlock = allKeywords.length
-      ? "(" + allKeywords.map(k=>quoteIfNeeded(k)).filter(Boolean).join(" OR ") + ")"
+      ? "(" + allKeywords.map(k => needsQuotes(k) ? `"${k.replaceAll('"','')}"` : k).join(" OR ") + ")"
       : "";
 
-    const base = (config.baseQuery || "").trim();
-    // bewusst nicht zu streng: wir setzen Blöcke nebeneinander (Google interpretiert das sinnvoll),
-    // statt überall AND zu erzwingen.
-    let q = "";
-    if(orBlock) q += orBlock + " ";
-    if(base) q += "(" + base + ")";
-
+    // bewusst nicht zu strict: orBlock + BASE_QUERY reicht
+    const q = [orBlock, "(" + BASE_QUERY + ")"].filter(Boolean).join(" ");
     return q.trim() || "Schule Hessen";
+  }
+
+  function needsQuotes(k){
+    return /\s/.test(k) || /[äöüÄÖÜß]/.test(k) || /[()]/.test(k);
+  }
+
+  function getEngine(){
+    const id=settings.engineId || "google";
+    return ENGINES.find(e=>e.id===id) || ENGINES[0];
   }
 
   function parseRSS(xmlText){
@@ -567,16 +341,11 @@
       const domain = getDomain(link);
       const fav = faviconUrl(domain);
 
-      const tags = computeTags(`${title} ${desc} ${source}`);
+      const tags = computeTags(`${title} ${desc} ${source} ${domain}`);
 
       out.push({ id, title, link, published, source, desc, img, domain, fav, tags });
     }
     return out;
-  }
-
-  function getEngine(){
-    const id=config.engineId || "google";
-    return ENGINES.find(e=>e.id===id) || ENGINES[0];
   }
 
   // =======================
@@ -588,7 +357,7 @@
 
     try{
       const engine=getEngine();
-      const q = applyDateFilter(buildGlobalQuery());
+      const q = buildGlobalQuery();
       const url = engine.buildUrl(q);
 
       const res = await fetch(PROXY(url), { cache:"no-store" });
@@ -611,7 +380,7 @@
 
       saveJSON(storeKey, archive);
       $("last").textContent = "Update: " + new Date().toLocaleTimeString("de-DE");
-      $("status").textContent = added ? `✅ ${added} neue Artikel.` : "✅ Keine neuen Treffer. (Wenn’s leer ist: Keywords/Basis-Query lockern.)";
+      $("status").textContent = added ? `✅ ${added} neue Artikel.` : "✅ Keine neuen Treffer.";
       render();
     }catch(e){
       console.error(e);
@@ -624,20 +393,8 @@
     pruneArchive();
 
     const filter = (searchInp.value || "").trim().toLowerCase();
-    const view = viewSel.value;
-
     let items = Object.values(archive).sort((a,b)=>(b.published||0)-(a.published||0));
 
-    // View filter
-    if(view !== "__all__"){
-      const idx = Number(view);
-      const catName = config.categories[idx]?.name;
-      if(catName){
-        items = items.filter(x => (x.tags||[]).includes(catName));
-      }
-    }
-
-    // Text filter
     if(filter){
       items = items.filter(x => (`${x.title} ${x.source} ${(x.tags||[]).join(" ")} ${x.domain}`.toLowerCase()).includes(filter));
     }
@@ -652,7 +409,7 @@
       warn.className="card";
       warn.innerHTML = `
         <div class="meta"><span class="pill danger">Hinweis</span><span>Proxy/Quelle hat kurz gezickt</span></div>
-        <p class="desc">Refresh später nochmal. Wenn das dauerhaft nervt: ich geb dir den free Cloudflare-Proxy (rock solid).</p>
+        <p class="desc">Refresh später nochmal. Wenn das ständig nervt, machen wir den Proxy auf Cloudflare – weiterhin free, aber stabiler.</p>
       `;
       root.appendChild(warn);
     }
@@ -664,9 +421,7 @@
         <div class="meta"><span class="pill">0 Treffer</span><span class="pill pillMuted">Quick Fix</span></div>
         <h2 class="title">Gerade keine Artikel im Feed</h2>
         <p class="desc">
-          1) Datumfilter leeren<br/>
-          2) Basis-Query weniger strict machen (z.B. nur <span class="kbd">Hessen</span>)<br/>
-          3) Test: in Themen-Kategorie <span class="kbd">Schule</span> & <span class="kbd">Bildung</span> drin lassen
+          Wechsel testweise auf Engine <b>Google News</b>. Wenn du seltene Namen trackst, kommen Treffer manchmal nur sporadisch.
         </p>
       `;
       root.appendChild(empty);
@@ -677,9 +432,7 @@
       const el=document.createElement("div");
       el.className="card";
 
-      // Bild-Logik: echtes Preview wenn vorhanden, sonst "Publisher Icon" als News-like Optik
-      const hasImg = !!it.img;
-      const thumb = hasImg
+      const thumb = it.img
         ? `<div class="thumb"><img src="${escapeAttr(it.img)}" alt="Vorschaubild" loading="lazy"></div>`
         : "";
 
@@ -688,6 +441,7 @@
         : "";
 
       const tags = (it.tags||[]).slice(0,3).map(t=>`<span class="pill">${escapeHtml(t)}</span>`).join("");
+      const tagRow = tags ? `<div class="tagRow">${tags}</div>` : `<div class="tagRow"><span class="pill pillMuted">ungetaggt</span></div>`;
 
       el.innerHTML = `
         ${thumb}
@@ -699,9 +453,7 @@
         </div>
         <h2 class="title">${escapeHtml(it.title)}</h2>
         <p class="desc">${escapeHtml((it.desc||"").slice(0, 240))}${(it.desc||"").length>240 ? "…" : ""}</p>
-        <div class="row" style="gap:8px">
-          ${tags || `<span class="pill pillMuted">ungetaggt</span>`}
-        </div>
+        ${tagRow}
         <div class="row">
           <a href="${escapeAttr(it.link)}" target="_blank" rel="noopener">Artikel öffnen →</a>
         </div>

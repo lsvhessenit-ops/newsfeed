@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LSV Hessen – Newsroom</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; background:#0b0f14; color:#e8eef6; }
+    header { padding: 16px 14px; position: sticky; top: 0; background: rgba(11,15,20,.92); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,.08); }
+    h1 { font-size: 16px; margin: 0 0 8px; letter-spacing:.2px; }
+    .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    select, input, button { background:#121a24; color:#e8eef6; border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:10px 12px; }
+    button { cursor:pointer; }
+    main { padding: 14px; display:grid; gap:10px; }
+    .card { background:#101723; border:1px solid rgba(255,255,255,.10); border-radius:14px; padding:12px; }
+    .meta { font-size: 12px; opacity:.8; display:flex; gap:10px; flex-wrap:wrap; }
+    .title { font-size: 15px; font-weight: 650; margin: 8px 0; line-height:1.25; }
+    .desc { font-size: 13px; opacity:.9; line-height:1.35; }
+    a { color:#7cc0ff; text-decoration:none; }
+    .status { font-size:12px; opacity:.75; margin-top:6px; }
+    .pill { font-size:12px; padding:4px 8px; border-radius:999px; background:rgba(124,192,255,.12); border:1px solid rgba(124,192,255,.25); }
+    .danger { background:rgba(255,110,110,.10); border-color:rgba(255,110,110,.25); }
+  </style>
+</head>
+<body>
+<header>
+  <h1>LSV Hessen – Newsroom (Live + 30 Tage Archiv)</h1>
+  <div class="row">
+    <select id="cluster"></select>
+    <input id="search" placeholder="Feinfilter (Titel/Quelle)" />
+    <button id="refresh">Refresh</button>
+    <span class="pill" id="count">0 Artikel</span>
+    <span class="pill" id="last">—</span>
+  </div>
+  <div class="status" id="status">Ready.</div>
+</header>
+
+<main id="list"></main>
+
+<script>
+  // ========= KONFIG =========
+  // Cluster = eure Themen. Du kannst hier 15+ Keywords pro Cluster reinballern.
+  const CLUSTERS = [
+    {
+      name: "Bildung Hessen – Overall",
+      // Google News Query: nutze Klammern, OR, AND, NOT, +when:1d/7d/30d
+      q: '(Bildung OR Schule OR Schulen OR Unterricht OR Lehrkräfte OR Schüler OR Abitur OR Schulpolitik OR Digitalisierung OR Inklusion OR Ganztag) AND (Hessen OR "Land Hessen" OR Kultusministerium OR HKM) when:30d'
+    },
+    {
+      name: "Kultus / Ministerium / Gesetze",
+      q: '(Kultusministerium OR HKM OR "Hessisches Kultusministerium" OR Schulgesetz OR Verordnung OR Erlass OR Lehrplan OR Kerncurriculum) AND (Hessen OR "Land Hessen") when:30d'
+    },
+    {
+      name: "Prüfungen / Abitur / ZP",
+      q: '(Abitur OR "Zentrale Prüfung" OR Abschlussprüfung OR Prüfungsordnung OR Noten OR "Klausur" OR "Nachteilsausgleich") AND (Hessen OR HKM) when:30d'
+    },
+    {
+      name: "Lehrkräfte / Personal / Streik",
+      q: '(Lehrkräfte OR Lehrer OR Unterrichtsausfall OR Vertretung OR "Lehrermangel" OR "Personalmangel" OR GEW OR Streik OR Tarif) AND (Hessen) when:30d'
+    }
+  ];
+
+  const GOOGLE_NEWS_RSS = (query) =>
+    'https://news.google.com/rss/search?q=' + encodeURIComponent(query) + '&hl=de&gl=DE&ceid=DE:de';
+
+  // Free CORS Proxy (AllOrigins) – damit der Browser RSS laden darf.
+  const PROXY = (url) => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+
+  // Archiv: 30 Tage
+  const MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+
+  // Auto-Refresh: alle 3 Minuten (instant “genug”, ohne zu nerven)
+  const REFRESH_EVERY_MS = 3 * 60 * 1000;
+
+  // ========= STATE =========
+  const $ = (id) => document.getElementById(id);
+  const storeKey = "lsv_news_archive_v1";
+  let archive = loadArchive(); // { id: {title, link, source, published, desc, cluster} }
+  let currentCluster = 0;
+
+  // ========= INIT UI =========
+  const clusterSel = $("cluster");
+  CLUSTERS.forEach((c, i) => {
+    const opt = document.createElement("option");
+    opt.value = String(i);
+    opt.textContent = c.name;
+    clusterSel.appendChild(opt);
+  });
+  clusterSel.value = "0";
+
+  clusterSel.addEventListener("change", async () => {
+    currentCluster = Number(clusterSel.value);
+    render();
+    await refresh();
+  });
+
+  $("refresh").addEventListener("click", refresh);
+  $("search").addEventListener("input", render);
+
+  // ========= HELPERS =========
+  function loadArchive() {
+    try { return JSON.parse(localStorage.getItem(storeKey) || "{}"); }
+    catch { return {}; }
+  }
+  function saveArchive() {
+    localStorage.setItem(storeKey, JSON.stringify(archive));
+  }
+  function pruneArchive() {
+    const now = Date.now();
+    for (const [id, item] of Object.entries(archive)) {
+      if (!item.published || (now - item.published) > MAX_AGE_MS) {
+        delete archive[id];
+      }
+    }
+  }
+  function hashId(str) {
+    // simple stable hash
+    let h = 0;
+    for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+    return String(h);
+  }
+  function parseRSS(xmlText, clusterName) {
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(xmlText, "text/xml");
+    const items = [...xml.querySelectorAll("item")];
+
+    const parsed = [];
+    for (const it of items) {
+      const title = it.querySelector("title")?.textContent?.trim() || "";
+      const link = it.querySelector("link")?.textContent?.trim() || "";
+      const pubDate = it.querySelector("pubDate")?.textContent?.trim() || "";
+      const source = it.querySelector("source")?.textContent?.trim() || "Google News";
+      const desc = it.querySelector("description")?.textContent?.trim() || "";
+
+      const published = pubDate ? Date.parse(pubDate) : Date.now();
+      const id = hashId(link || title);
+
+      parsed.push({ id, title, link, source, published, desc: stripHtml(desc), cluster: clusterName });
+    }
+    return parsed;
+  }
+  function stripHtml(s) {
+    const div = document.createElement("div");
+    div.innerHTML = s;
+    return (div.textContent || div.innerText || "").trim();
+  }
+  function fmtDate(ms) {
+    try { return new Date(ms).toLocaleString("de-DE"); }
+    catch { return ""; }
+  }
+
+  // ========= CORE =========
+  async function refresh() {
+    const cluster = CLUSTERS[currentCluster];
+    const rssUrl = GOOGLE_NEWS_RSS(cluster.q);
+
+    $("status").textContent = "Hole News…";
+    $("status").className = "status";
+
+    try {
+      pruneArchive();
+
+      const res = await fetch(PROXY(rssUrl), { cache: "no-store" });
+      if (!res.ok) throw new Error("Proxy HTTP " + res.status);
+
+      const xmlText = await res.text();
+      const items = parseRSS(xmlText, cluster.name);
+
+      let added = 0;
+      for (const it of items) {
+        if (!archive[it.id]) { archive[it.id] = it; added++; }
+        else {
+          // update minimal fields
+          archive[it.id].published = archive[it.id].published || it.published;
+          archive[it.id].cluster = archive[it.id].cluster || it.cluster;
+        }
+      }
+
+      saveArchive();
+      $("last").textContent = "Update: " + new Date().toLocaleTimeString("de-DE");
+      $("status").textContent = added ? `✅ ${added} neue Artikel.` : "✅ Nichts Neues (ist auch gut).";
+      render();
+    } catch (e) {
+      $("status").textContent = "⚠️ Laden fehlgeschlagen. (Free Proxy kann manchmal spinnen.)";
+      $("status").className = "status";
+      console.error(e);
+      render(true);
+    }
+  }
+
+  function render(isError=false) {
+    pruneArchive();
+
+    const filter = $("search").value.trim().toLowerCase();
+    const clusterName = CLUSTERS[currentCluster].name;
+
+    const items = Object.values(archive)
+      .filter(x => x.cluster === clusterName)
+      .filter(x => !filter || (x.title + " " + x.source).toLowerCase().includes(filter))
+      .sort((a,b) => (b.published||0) - (a.published||0));
+
+    $("count").textContent = `${items.length} Artikel`;
+
+    const root = $("list");
+    root.innerHTML = "";
+
+    if (isError) {
+      const warn = document.createElement("div");
+      warn.className = "card";
+      warn.innerHTML = `<div class="meta"><span class="pill danger">Hinweis</span></div>
+        <div class="title">Wenn das öfter passiert…</div>
+        <div class="desc">Dann ersetzen wir den Free-Proxy durch einen eigenen kostenlosen Proxy (Cloudflare Pages Function). Das ist stabiler.</div>`;
+      root.appendChild(warn);
+    }
+
+    for (const it of items) {
+      const el = document.createElement("div");
+      el.className = "card";
+      el.innerHTML = `
+        <div class="meta">
+          <span>${fmtDate(it.published)}</span>
+          <span>•</span>
+          <span>${escapeHtml(it.source)}</span>
+        </div>
+        <div class="title">${escapeHtml(it.title)}</div>
+        <div class="desc">${escapeHtml(it.desc).slice(0, 240)}${it.desc.length > 240 ? "…" : ""}</div>
+        <div style="margin-top:10px"><a href="${escapeAttr(it.link)}" target="_blank" rel="noopener">Artikel öffnen →</a></div>
+      `;
+      root.appendChild(el);
+    }
+
+    if (!items.length) {
+      const empty = document.createElement("div");
+      empty.className = "card";
+      empty.innerHTML = `<div class="title">Noch keine Artikel im Archiv</div>
+        <div class="desc">Drück oben auf Refresh. Oder erweitere die Keywords im Cluster.</div>`;
+      root.appendChild(empty);
+    }
+  }
+
+  function escapeHtml(s="") {
+    return s.replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");
+  }
+  function escapeAttr(s="") { return escapeHtml(s); }
+
+  // ========= START =========
+  (async () => {
+    render();
+    await refresh();
+    setInterval(refresh, REFRESH_EVERY_MS);
+  })();
+</script>
+</body>
+</html>
